@@ -47,7 +47,7 @@ void* talloc(int size) {
 
     printf("  call to sbrk %d\n", size);
     struct free* chunk = sbrk(size);
-    if ((int)chunk != -1) {
+    if ((size_t)chunk != -1) {
         return set_size(chunk, asize);
     }
     return (void*)-1;
@@ -69,5 +69,23 @@ int tfree(void* ptr) {
     printf("call to tfree %d\n", chunk->size);
 
     return 0;
+}
+
+void print_free() {
+    struct free * cur = head;
+    while (cur != NULL) {
+        printf("free %d\n", cur->size);
+        cur = cur->next;
+    }
+}
+
+void fragments() {
+    struct free * cur = head;
+    while (cur != NULL) {
+        if (cur->size < sizeof(int) + 1) {
+            printf("fragment %d\n", cur->size);
+        }
+        cur = cur->next;
+    }
 }
 
